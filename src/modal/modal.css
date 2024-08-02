@@ -1,0 +1,29 @@
+.modal {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.685);
+}
+
+.modal div {
+  background-color: #242424;
+  width: 60%;
+  margin: auto;
+  margin-top: 40vh;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.modal h1 {
+  margin: 10px 0;
+}
+
+.open {
+  display: block;
+}
+
+.close {
+  display: none;
+}
