@@ -8,6 +8,7 @@ function App() {
     const [modal, setModal] = useState<boolean>(false);
     const [deleteRowNum, setDeleteRowNum] = useState(0);
     const [deleteColNum, setDeleteColNum] = useState(0);
+    const [changeInfo, setChangeInfo] = useState({ type: 'string', colomn: 0, row: 0 });
 
     async function getArrayTreatment() {
         try {
@@ -63,7 +64,13 @@ function App() {
         <>
             <h1>Test Task for Development grove</h1>
 
-            <Modal open={modal} setModalClose={setModal} />
+            <Modal
+                open={modal}
+                setModalClose={setModal}
+                type={changeInfo.type}
+                colomn={changeInfo.colomn}
+                row={changeInfo.row}
+            />
 
             <div className="deleteDiv">
                 <p>Удалить строку №</p>
@@ -76,6 +83,7 @@ function App() {
                 <button
                     disabled={deleteRowNum === 0 || matrix.length === 1}
                     onClick={() => {
+                        setChangeInfo({ type: 'Удаление', colomn: 0, row: deleteRowNum });
                         setModal(true);
                         deleteRow(deleteRowNum - 1);
                     }}
@@ -94,6 +102,7 @@ function App() {
                 <button
                     disabled={deleteColNum === 0 || matrix[0].length === 1}
                     onClick={() => {
+                        setChangeInfo({ type: 'Удаление', colomn: deleteColNum, row: 0 });
                         setModal(true);
                         deleteCol(deleteColNum - 1);
                     }}
@@ -106,6 +115,7 @@ function App() {
                 <button
                     disabled={matrix[0].length === 100}
                     onClick={() => {
+                        setChangeInfo({ type: 'Добавление', colomn: matrix[0].length + 1, row: 0 });
                         setModal(true);
                         newCol();
                     }}
@@ -115,6 +125,7 @@ function App() {
                 <button
                     disabled={matrix.length === 100}
                     onClick={() => {
+                        setChangeInfo({ type: 'Добавление', colomn: 0, row: matrix.length });
                         setModal(true);
                         newRow();
                     }}
@@ -122,57 +133,78 @@ function App() {
                     Добавить строку
                 </button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        {matrix[0].map((_, index) => (
-                            <th key={`Обработка ${index}`}>
-                                {`Обработка № ${index + 1}`}
-                                <button
-                                    disabled={matrix[0].length === 1}
-                                    onClick={() => {
-                                        setModal(true);
-                                        deleteCol(index);
-                                    }}
-                                >
-                                    Удалить
-                                </button>
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {matrix.map((row, rowIndex) => (
-                        <tr key={`Строка ${rowIndex}`}>
-                            <th key={rowIndex + 'Заказ'}>
-                                {'Заказ №' + (rowIndex + 1)}
-                                <button
-                                    disabled={matrix.length === 1}
-                                    onClick={() => {
-                                        setModal(true);
-                                        deleteRow(rowIndex);
-                                    }}
-                                >
-                                    Удалить
-                                </button>
-                            </th>
-                            {row.map((cell, colIndex) => (
-                                <td
-                                    onClick={() => {
-                                        setModal(true);
-                                        handleClick(rowIndex, colIndex);
-                                    }}
-                                    key={`Ячейка ${cell} и ${colIndex}`}
-                                    className={cell ? 'colorForTrue' : 'colorForFalse'}
-                                >
-                                    НАЖМИ ЧТОБЫ ПОМЕНЯТЬ СТАТУС
-                                </td>
+            <div className="tableWrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {matrix[0].map((_, index) => (
+                                <th key={`Обработка ${index}`}>
+                                    {`Обработка № ${index + 1}`}
+                                    <button
+                                        disabled={matrix[0].length === 1}
+                                        onClick={() => {
+                                            setChangeInfo({
+                                                type: 'Удаление',
+                                                colomn: index + 1,
+                                                row: 0,
+                                            });
+
+                                            window.scrollTo(0, 0);
+                                            setModal(true);
+                                            deleteCol(index);
+                                        }}
+                                    >
+                                        Удалить
+                                    </button>
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {matrix.map((row, rowIndex) => (
+                            <tr key={`Строка ${rowIndex}`}>
+                                <th key={rowIndex + 'Заказ'}>
+                                    {'Заказ №' + (rowIndex + 1)}
+                                    <button
+                                        disabled={matrix.length === 1}
+                                        onClick={() => {
+                                            setChangeInfo({
+                                                type: 'Удаление',
+                                                colomn: 0,
+                                                row: rowIndex + 1,
+                                            });
+                                            window.scrollTo(0, 0);
+                                            setModal(true);
+                                            deleteRow(rowIndex);
+                                        }}
+                                    >
+                                        Удалить
+                                    </button>
+                                </th>
+                                {row.map((cell, colIndex) => (
+                                    <td
+                                        onClick={() => {
+                                            setChangeInfo({
+                                                type: 'Изменение статуса',
+                                                colomn: colIndex + 1,
+                                                row: rowIndex + 1,
+                                            });
+                                            window.scrollTo(0, 0);
+                                            setModal(true);
+                                            handleClick(rowIndex, colIndex);
+                                        }}
+                                        key={`Ячейка ${cell} и ${colIndex}`}
+                                        className={cell ? 'colorForTrue' : 'colorForFalse'}
+                                    >
+                                        НАЖМИ ЧТОБЫ ПОМЕНЯТЬ СТАТУС
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }
